@@ -1,0 +1,143 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Vlastné parametre",
+        "description": "Vytvorí integráciu Vlastné parametre. Samotné parametre potom pridáš tlačidlom „Pridať parameter“ na stránke integrácie."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Vlastné parametre sú už nastavené."
+    }
+  },
+  "config_subentries": {
+    "parameter": {
+      "initiate_flow": {
+        "user": "Pridať parameter"
+      },
+      "entry_type": "Parameter",
+      "step": {
+        "user": {
+          "title": "Nový parameter",
+          "description": "Zadefinuj parameter, ktorý sa pridá ku každému zodpovedajúcemu zariadeniu alebo entite.",
+          "data": {
+            "name": "Názov",
+            "key": "Systémový názov (service name)",
+            "type": "Typ hodnoty",
+            "unit": "Jednotka",
+            "target": "Pridať k",
+            "domains": "Typy zariadení / entít",
+            "icon": "Ikona"
+          },
+          "data_description": {
+            "key": "Použije sa v ID entít. Ak necháš prázdne, vytvorí sa z názvu.",
+            "unit": "Napr. W, h, km, €. Pri čísle je to skutočná merná jednotka, pri ostatných typoch sa zobrazí ako atribút.",
+            "target": "Zariadenie: jedna hodnota na zariadenie. Entita: jedna hodnota na každú entitu.",
+            "domains": "Zariadenie sa zaradí, ak má aspoň jednu entitu zvoleného typu. Môžeš dopísať aj iný typ (doménu)."
+          }
+        },
+        "reconfigure": {
+          "title": "Upraviť parameter",
+          "description": "Systémový názov (nedá sa zmeniť): `{key}`",
+          "data": {
+            "name": "Názov",
+            "type": "Typ hodnoty",
+            "unit": "Jednotka",
+            "target": "Pridať k",
+            "domains": "Typy zariadení / entít",
+            "icon": "Ikona"
+          },
+          "data_description": {
+            "unit": "Napr. W, h, km, €. Pri čísle je to skutočná merná jednotka, pri ostatných typoch sa zobrazí ako atribút.",
+            "target": "Zariadenie: jedna hodnota na zariadenie. Entita: jedna hodnota na každú entitu.",
+            "domains": "Zariadenie sa zaradí, ak má aspoň jednu entitu zvoleného typu. Môžeš dopísať aj iný typ (doménu)."
+          }
+        },
+        "number": {
+          "title": "Nastavenie čísla",
+          "data": {
+            "min": "Minimum",
+            "max": "Maximum",
+            "step": "Krok",
+            "mode": "Spôsob zadávania"
+          }
+        },
+        "select": {
+          "title": "Možnosti",
+          "description": "Napíš možnosť a stlač Enter na jej pridanie.",
+          "data": {
+            "options": "Možnosti"
+          }
+        },
+        "text": {
+          "title": "Nastavenie textu",
+          "data": {
+            "max_length": "Maximálna dĺžka"
+          }
+        }
+      },
+      "error": {
+        "invalid_key": "Systémový názov nie je platný.",
+        "key_exists": "Parameter s týmto systémovým názvom už existuje.",
+        "no_domains": "Vyber aspoň jeden typ.",
+        "min_max": "Minimum musí byť menšie ako maximum.",
+        "step": "Krok musí byť väčší ako 0.",
+        "no_options": "Pridaj aspoň jednu možnosť."
+      },
+      "abort": {
+        "reconfigure_successful": "Parameter bol upravený."
+      }
+    }
+  },
+  "selector": {
+    "param_type": {
+      "options": {
+        "number": "Číslo",
+        "text": "Text (reťazec)",
+        "date": "Dátum",
+        "datetime": "Dátum a čas",
+        "boolean": "Áno / Nie",
+        "select": "Výber zo zoznamu"
+      }
+    },
+    "target": {
+      "options": {
+        "device": "Zariadenie",
+        "entity": "Entita"
+      }
+    },
+    "number_mode": {
+      "options": {
+        "box": "Pole na zadanie",
+        "slider": "Posuvník"
+      }
+    },
+    "domains": {
+      "options": {
+        "light": "Svetlo",
+        "switch": "Vypínač",
+        "cover": "Žalúzie / rolety",
+        "climate": "Klimatizácia / kúrenie",
+        "fan": "Ventilátor",
+        "sensor": "Senzor",
+        "binary_sensor": "Binárny senzor",
+        "lock": "Zámok",
+        "media_player": "Prehrávač",
+        "vacuum": "Vysávač",
+        "camera": "Kamera",
+        "valve": "Ventil",
+        "water_heater": "Ohrievač vody",
+        "humidifier": "Zvlhčovač",
+        "alarm_control_panel": "Alarm",
+        "button": "Tlačidlo",
+        "number": "Číslo",
+        "select": "Výber",
+        "siren": "Siréna",
+        "lawn_mower": "Kosačka",
+        "update": "Aktualizácia",
+        "event": "Udalosť",
+        "device_tracker": "Sledovanie polohy"
+      }
+    }
+  }
+}

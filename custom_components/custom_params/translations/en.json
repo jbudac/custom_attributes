@@ -1,0 +1,143 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Custom Parameters",
+        "description": "Create the Custom Parameters integration. Parameters are added afterwards with the \"Add parameter\" button on the integration page."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Custom Parameters is already set up."
+    }
+  },
+  "config_subentries": {
+    "parameter": {
+      "initiate_flow": {
+        "user": "Add parameter"
+      },
+      "entry_type": "Parameter",
+      "step": {
+        "user": {
+          "title": "New parameter",
+          "description": "Define a parameter that will be added to every matching device or entity.",
+          "data": {
+            "name": "Name",
+            "key": "System name (service name)",
+            "type": "Value type",
+            "unit": "Unit",
+            "target": "Attach to",
+            "domains": "Device / entity types",
+            "icon": "Icon"
+          },
+          "data_description": {
+            "key": "Used in entity IDs. Leave empty to generate it from the name.",
+            "unit": "E.g. W, h, km, €. Numbers get a real unit of measurement, other types show it as an attribute.",
+            "target": "Device: one value per device. Entity: one value per entity.",
+            "domains": "Devices are matched when they have at least one entity of a selected type. You can type any other domain too."
+          }
+        },
+        "reconfigure": {
+          "title": "Edit parameter",
+          "description": "System name (cannot be changed): `{key}`",
+          "data": {
+            "name": "Name",
+            "type": "Value type",
+            "unit": "Unit",
+            "target": "Attach to",
+            "domains": "Device / entity types",
+            "icon": "Icon"
+          },
+          "data_description": {
+            "unit": "E.g. W, h, km, €. Numbers get a real unit of measurement, other types show it as an attribute.",
+            "target": "Device: one value per device. Entity: one value per entity.",
+            "domains": "Devices are matched when they have at least one entity of a selected type. You can type any other domain too."
+          }
+        },
+        "number": {
+          "title": "Number settings",
+          "data": {
+            "min": "Minimum",
+            "max": "Maximum",
+            "step": "Step",
+            "mode": "Input mode"
+          }
+        },
+        "select": {
+          "title": "Options",
+          "description": "Type an option and press Enter to add it.",
+          "data": {
+            "options": "Options"
+          }
+        },
+        "text": {
+          "title": "Text settings",
+          "data": {
+            "max_length": "Maximum length"
+          }
+        }
+      },
+      "error": {
+        "invalid_key": "The system name is not valid.",
+        "key_exists": "A parameter with this system name already exists.",
+        "no_domains": "Choose at least one type.",
+        "min_max": "Minimum must be lower than maximum.",
+        "step": "Step must be greater than 0.",
+        "no_options": "Add at least one option."
+      },
+      "abort": {
+        "reconfigure_successful": "The parameter was updated."
+      }
+    }
+  },
+  "selector": {
+    "param_type": {
+      "options": {
+        "number": "Number",
+        "text": "Text",
+        "date": "Date",
+        "datetime": "Date and time",
+        "boolean": "Yes / No",
+        "select": "Selection from a list"
+      }
+    },
+    "target": {
+      "options": {
+        "device": "Device",
+        "entity": "Entity"
+      }
+    },
+    "number_mode": {
+      "options": {
+        "box": "Input box",
+        "slider": "Slider"
+      }
+    },
+    "domains": {
+      "options": {
+        "light": "Light",
+        "switch": "Switch",
+        "cover": "Cover / blinds",
+        "climate": "Climate",
+        "fan": "Fan",
+        "sensor": "Sensor",
+        "binary_sensor": "Binary sensor",
+        "lock": "Lock",
+        "media_player": "Media player",
+        "vacuum": "Vacuum",
+        "camera": "Camera",
+        "valve": "Valve",
+        "water_heater": "Water heater",
+        "humidifier": "Humidifier",
+        "alarm_control_panel": "Alarm panel",
+        "button": "Button",
+        "number": "Number",
+        "select": "Select",
+        "siren": "Siren",
+        "lawn_mower": "Lawn mower",
+        "update": "Update",
+        "event": "Event",
+        "device_tracker": "Device tracker"
+      }
+    }
+  }
+}
