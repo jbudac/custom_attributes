@@ -9,7 +9,7 @@ Integrácia, ktorá umožní zadefinovať **vlastné parametre** (napr. *Príkon
    - **Systémový názov (service name)** – napr. `prikon`; ak ho necháš prázdny, vytvorí sa z názvu
    - **Typ hodnoty** – číslo, text, dátum, dátum a čas, áno/nie, výber zo zoznamu
    - **Jednotka** – napr. `W`, `h`, `km`
-   - **Pridať k** – *Zariadenie* (jedna hodnota na zariadenie) alebo *Entita* (jedna hodnota na entitu)
+   - **Pridať k** – *Zariadenie* (jedna hodnota na zariadenie), *Entita* (jedna hodnota na každú entitu) alebo **oboje naraz**
    - **Typy zariadení / entít** – napr. `light`, `switch`, `cover`; dá sa dopísať aj ľubovoľná iná doména
    - **Ikona** (nepovinné)
 2. Pri čísle nastavíš ešte minimum, maximum, krok a spôsob zadávania. Pri výbere zadáš možnosti a pri texte maximálnu dĺžku.
@@ -24,7 +24,9 @@ Integrácia, ktorá umožní zadefinovať **vlastné parametre** (napr. *Príkon
 | Áno / Nie | `switch` | – |
 | Výber zo zoznamu | `select` | atribút `unit` |
 
-Každá entita parametra má atribúty `parameter`, `target_device_id` a pri režime *Entita* aj `target_entity_id`.
+Každá entita parametra má atribúty `parameter`, `target_device_id` a pri hodnote pre entitu aj `target_entity_id`.
+
+Ak zaškrtneš zariadenie aj entitu, hlavná entita zariadenia dostane do názvu ID entity, aby sa nemiešala s hodnotou zariadenia. Napr. `Kuchynské svetlo Príkon` (zariadenie) a `Kuchynské svetlo Príkon (light.kuchynske_svetlo)` (entita).
 
 ### Automaticky
 - Novo pridané zariadenia a entity dostanú parameter automaticky (do ~5 sekúnd).

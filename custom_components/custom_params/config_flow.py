@@ -46,6 +46,7 @@ from .const import (
     TYPE_NUMBER,
     TYPE_SELECT,
     TYPE_TEXT,
+    get_targets,
 )
 
 # Keys that belong only to a specific type; removed when the type does not match.
@@ -70,9 +71,10 @@ def _base_schema(include_key: bool) -> vol.Schema:
                 )
             ),
             vol.Optional(CONF_UNIT): selector.TextSelector(),
-            vol.Required(CONF_TARGET, default=TARGET_DEVICE): selector.SelectSelector(
+            vol.Required(CONF_TARGET, default=[TARGET_DEVICE]): selector.SelectSelector(
                 selector.SelectSelectorConfig(
                     options=[TARGET_DEVICE, TARGET_ENTITY],
+                    multiple=True,
                     mode=selector.SelectSelectorMode.LIST,
                     translation_key="target",
                 )
@@ -165,7 +167,11 @@ class ParameterSubentryFlow(ConfigSubentryFlow):
         return self.source == SOURCE_RECONFIGURE
 
     def _existing(self) -> dict[str, Any]:
-        return dict(self._get_reconfigure_subentry().data) if self._is_reconfigure else {}
+        if not self._is_reconfigure:
+            return {}
+        data = dict(self._get_reconfigure_subentry().data)
+        data[CONF_TARGET] = get_targets(data)
+        return data
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -178,6 +184,8 @@ class ParameterSubentryFlow(ConfigSubentryFlow):
                 errors[CONF_KEY] = "invalid_key"
             elif key in used:
                 errors[CONF_KEY] = "key_exists"
+            elif not user_input.get(CONF_TARGET):
+                errors[CONF_TARGET] = "no_target"
             elif not user_input.get(CONF_DOMAINS):
                 errors[CONF_DOMAINS] = "no_domains"
             else:
@@ -198,7 +206,9 @@ class ParameterSubentryFlow(ConfigSubentryFlow):
         existing = self._existing()
         errors: dict[str, str] = {}
         if user_input is not None:
-            if not user_input.get(CONF_DOMAINS):
+            if not user_input.get(CONF_TARGET):
+                errors[CONF_TARGET] = "no_target"
+            elif not user_input.get(CONF_DOMAINS):
                 errors[CONF_DOMAINS] = "no_domains"
             else:
                 # Keep type-specific settings as defaults for the next step.

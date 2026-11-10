@@ -70,7 +70,7 @@ async def test_full_lifecycle(hass: HomeAssistant) -> None:
     # --- number parameter on devices with light/switch
     res = await _add_param(
         hass, entry,
-        {"name": "Príkon", "type": "number", "unit": "W", "target": "device",
+        {"name": "Príkon", "type": "number", "unit": "W", "target": ["device"],
          "domains": ["light", "switch"]},
         {"min": 0, "max": 5000, "step": 0.5, "mode": "box"},
     )
@@ -104,14 +104,14 @@ async def test_full_lifecycle(hass: HomeAssistant) -> None:
     flow = await hass.config_entries.subentries.async_init(
         (entry.entry_id, SUBENTRY_TYPE), context={"source": SOURCE_USER})
     res = await hass.config_entries.subentries.async_configure(flow["flow_id"],
-        {"name": "Prikon", "type": "text", "target": "device", "domains": ["light"]})
+        {"name": "Prikon", "type": "text", "target": ["device"], "domains": ["light"]})
     assert res["errors"] == {"key": "key_exists"}
     hass.config_entries.subentries.async_abort(flow["flow_id"])
 
     # --- select parameter per entity on covers
     res = await _add_param(
         hass, entry,
-        {"name": "Strana", "key": "side", "type": "select", "target": "entity",
+        {"name": "Strana", "key": "side", "type": "select", "target": ["entity"],
          "domains": ["cover"]},
         {"options": ["Juh", "Sever", "Juh"]},
     )
@@ -126,7 +126,7 @@ async def test_full_lifecycle(hass: HomeAssistant) -> None:
 
     # --- text / date / boolean on entity incl. entity without device
     res = await _add_param(hass, entry,
-        {"name": "Poznámka", "type": "text", "unit": "km", "target": "entity", "domains": ["light"]},
+        {"name": "Poznámka", "type": "text", "unit": "km", "target": ["entity"], "domains": ["light"]},
         {"max_length": 100})
     assert res["type"] is FlowResultType.CREATE_ENTRY
     st = hass.states.get("text.garden_light_poznamka")
@@ -137,20 +137,20 @@ async def test_full_lifecycle(hass: HomeAssistant) -> None:
     assert hass.states.get("text.garden_light_poznamka").state == "ahoj"
 
     res = await _add_param(hass, entry,
-        {"name": "Výmena batérie", "type": "date", "target": "device", "domains": ["cover"]})
+        {"name": "Výmena batérie", "type": "date", "target": ["device"], "domains": ["cover"]})
     assert res["type"] is FlowResultType.CREATE_ENTRY
     await hass.services.async_call("date", "set_value",
         {"entity_id": "date.blinds_vymena_baterie", "date": "2026-03-01"}, blocking=True)
     assert hass.states.get("date.blinds_vymena_baterie").state == "2026-03-01"
 
     res = await _add_param(hass, entry,
-        {"name": "Inštalované", "type": "datetime", "target": "device", "domains": ["switch"]})
+        {"name": "Inštalované", "type": "datetime", "target": ["device"], "domains": ["switch"]})
     await hass.services.async_call("datetime", "set_value",
         {"entity_id": "datetime.plug_instalovane", "datetime": "2026-03-01 10:00:00"}, blocking=True)
     assert hass.states.get("datetime.plug_instalovane").state.startswith("2026-03-01")
 
     res = await _add_param(hass, entry,
-        {"name": "Záruka", "type": "boolean", "target": "device", "domains": ["switch"]})
+        {"name": "Záruka", "type": "boolean", "target": ["device"], "domains": ["switch"]})
     await hass.services.async_call("switch", "turn_on",
         {"entity_id": "switch.plug_zaruka"}, blocking=True)
     assert hass.states.get("switch.plug_zaruka").state == "on"
@@ -162,7 +162,7 @@ async def test_full_lifecycle(hass: HomeAssistant) -> None:
         context={"source": SOURCE_RECONFIGURE, "subentry_id": sub.subentry_id})
     assert flow["step_id"] == "reconfigure"
     res = await hass.config_entries.subentries.async_configure(flow["flow_id"],
-        {"name": "Príkon", "type": "number", "unit": "kW", "target": "device", "domains": ["light"]})
+        {"name": "Príkon", "type": "number", "unit": "kW", "target": ["device"], "domains": ["light"]})
     assert res["step_id"] == "number"
     res = await hass.config_entries.subentries.async_configure(flow["flow_id"],
         {"min": 0, "max": 10, "step": 0.1, "mode": "slider"})
@@ -194,7 +194,7 @@ async def test_readme_template(hass: HomeAssistant) -> None:
     from homeassistant.helpers.template import Template
     entry, d = await _setup(hass)
     await _add_param(hass, entry,
-        {"name": "Príkon", "type": "number", "unit": "W", "target": "device", "domains": ["light"]},
+        {"name": "Príkon", "type": "number", "unit": "W", "target": ["device"], "domains": ["light"]},
         {"min": 0, "max": 5000, "step": 1, "mode": "box"})
     await hass.services.async_call("number", "set_value",
         {"entity_id": "number.kitchen_lamp_prikon", "value": 60}, blocking=True)
@@ -207,3 +207,56 @@ async def test_readme_template(hass: HomeAssistant) -> None:
         " | select('match','number\\..*_prikon$')"
         " | map('states') | map('float', 0) | sum }}", hass)
     assert float(tpl.async_render()) == 60.0
+
+
+async def test_device_and_entity(hass: HomeAssistant) -> None:
+    entry, d = await _setup(hass)
+    # second (named) entity on the lamp device
+    er.async_get(hass).async_get_or_create(
+        "light", "demo", "lamp_nl", device_id=d["lamp"].id, config_entry=d["src"],
+        has_entity_name=True, original_name="Night light")
+
+    # nothing selected -> error
+    flow = await hass.config_entries.subentries.async_init(
+        (entry.entry_id, SUBENTRY_TYPE), context={"source": SOURCE_USER})
+    res = await hass.config_entries.subentries.async_configure(flow["flow_id"],
+        {"name": "X", "type": "text", "target": [], "domains": ["light"]})
+    assert res["errors"] == {"target": "no_target"}
+    hass.config_entries.subentries.async_abort(flow["flow_id"])
+
+    res = await _add_param(hass, entry,
+        {"name": "Príkon", "type": "number", "unit": "W",
+         "target": ["device", "entity"], "domains": ["light"]},
+        {"min": 0, "max": 5000, "step": 1, "mode": "box"})
+    assert res["type"] is FlowResultType.CREATE_ENTRY
+    ids = sorted(e.entity_id for e in _our_entities(hass, entry))
+    assert ids == [
+        "number.garden_light_prikon",                    # entity without device
+        "number.kitchen_lamp_night_light_prikon",         # named entity on device
+        "number.kitchen_lamp_prikon",                     # device value
+        "number.kitchen_lamp_prikon_light_kitchen_lamp",  # main entity of device
+    ], ids
+    st = hass.states.get("number.kitchen_lamp_prikon_light_kitchen_lamp")
+    assert st.attributes["target_entity_id"] == "light.kitchen_lamp"
+    assert "target_entity_id" not in hass.states.get("number.kitchen_lamp_prikon").attributes
+
+    # reconfigure keeps both checked and allows switching to entity only
+    sub = next(iter(hass.config_entries.async_get_entry(entry.entry_id).subentries.values()))
+    flow = await hass.config_entries.subentries.async_init(
+        (entry.entry_id, SUBENTRY_TYPE),
+        context={"source": SOURCE_RECONFIGURE, "subentry_id": sub.subentry_id})
+    res = await hass.config_entries.subentries.async_configure(flow["flow_id"],
+        {"name": "Príkon", "type": "number", "target": ["entity"], "domains": ["light"]})
+    res = await hass.config_entries.subentries.async_configure(flow["flow_id"],
+        {"min": 0, "max": 5000, "step": 1, "mode": "box"})
+    await hass.async_block_till_done()
+    assert hass.states.get("number.kitchen_lamp_prikon") is None
+    assert len(_our_entities(hass, entry)) == 3
+
+
+async def test_old_string_target_still_works(hass: HomeAssistant) -> None:
+    from homeassistant.config_entries import ConfigSubentryData
+    from custom_components.custom_params.targets import compute_targets
+    entry, d = await _setup(hass)
+    targets = compute_targets(hass, {"target": "device", "domains": ["light"]})
+    assert [t.device_id for t in targets] == [d["lamp"].id]

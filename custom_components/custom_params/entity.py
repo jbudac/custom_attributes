@@ -36,6 +36,8 @@ class CustomParamEntity(Entity):
         self._param: dict[str, Any] = dict(subentry.data)
         self._target = target
         param_name: str = self._param[CONF_NAME]
+        if target.suffix:
+            param_name = f"{param_name} {target.suffix}"
 
         self._attr_unique_id = f"{subentry.subentry_id}_{target.key}"
         if icon := self._param.get(CONF_ICON):

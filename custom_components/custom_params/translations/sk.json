@@ -32,7 +32,7 @@
           "data_description": {
             "key": "Použije sa v ID entít. Ak necháš prázdne, vytvorí sa z názvu.",
             "unit": "Napr. W, h, km, €. Pri čísle je to skutočná merná jednotka, pri ostatných typoch sa zobrazí ako atribút.",
-            "target": "Zariadenie: jedna hodnota na zariadenie. Entita: jedna hodnota na každú entitu.",
+            "target": "Zariadenie: jedna hodnota na zariadenie. Entita: jedna hodnota na každú entitu. Môžeš zaškrtnúť oboje.",
             "domains": "Zariadenie sa zaradí, ak má aspoň jednu entitu zvoleného typu. Môžeš dopísať aj iný typ (doménu)."
           }
         },
@@ -49,7 +49,7 @@
           },
           "data_description": {
             "unit": "Napr. W, h, km, €. Pri čísle je to skutočná merná jednotka, pri ostatných typoch sa zobrazí ako atribút.",
-            "target": "Zariadenie: jedna hodnota na zariadenie. Entita: jedna hodnota na každú entitu.",
+            "target": "Zariadenie: jedna hodnota na zariadenie. Entita: jedna hodnota na každú entitu. Môžeš zaškrtnúť oboje.",
             "domains": "Zariadenie sa zaradí, ak má aspoň jednu entitu zvoleného typu. Môžeš dopísať aj iný typ (doménu)."
           }
         },
@@ -80,6 +80,7 @@
         "invalid_key": "Systémový názov nie je platný.",
         "key_exists": "Parameter s týmto systémovým názvom už existuje.",
         "no_domains": "Vyber aspoň jeden typ.",
+        "no_target": "Zaškrtni zariadenie, entitu alebo oboje.",
         "min_max": "Minimum musí byť menšie ako maximum.",
         "step": "Krok musí byť väčší ako 0.",
         "no_options": "Pridaj aspoň jednu možnosť."

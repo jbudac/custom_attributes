@@ -32,7 +32,7 @@
           "data_description": {
             "key": "Used in entity IDs. Leave empty to generate it from the name.",
             "unit": "E.g. W, h, km, €. Numbers get a real unit of measurement, other types show it as an attribute.",
-            "target": "Device: one value per device. Entity: one value per entity.",
+            "target": "Device: one value per device. Entity: one value per entity. You can select both.",
             "domains": "Devices are matched when they have at least one entity of a selected type. You can type any other domain too."
           }
         },
@@ -49,7 +49,7 @@
           },
           "data_description": {
             "unit": "E.g. W, h, km, €. Numbers get a real unit of measurement, other types show it as an attribute.",
-            "target": "Device: one value per device. Entity: one value per entity.",
+            "target": "Device: one value per device. Entity: one value per entity. You can select both.",
             "domains": "Devices are matched when they have at least one entity of a selected type. You can type any other domain too."
           }
         },
@@ -80,6 +80,7 @@
         "invalid_key": "The system name is not valid.",
         "key_exists": "A parameter with this system name already exists.",
         "no_domains": "Choose at least one type.",
+        "no_target": "Select device, entity or both.",
         "min_max": "Minimum must be lower than maximum.",
         "step": "Step must be greater than 0.",
         "no_options": "Add at least one option."

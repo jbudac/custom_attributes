@@ -53,6 +53,14 @@ PLATFORMS: list[Platform] = list(dict.fromkeys(TYPE_TO_PLATFORM.values()))
 TARGET_DEVICE = "device"
 TARGET_ENTITY = "entity"
 
+
+def get_targets(data) -> list[str]:
+    """Return selected target kinds (older versions stored a single string)."""
+    value = data.get(CONF_TARGET) or [TARGET_DEVICE]
+    if isinstance(value, str):
+        value = [value]
+    return [v for v in (TARGET_DEVICE, TARGET_ENTITY) if v in value]
+
 # Domains offered in the UI. Any other domain can be typed in manually.
 DOMAIN_CHOICES = [
     "light",

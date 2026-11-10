@@ -9,7 +9,7 @@ from typing import Any
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 
-from .const import CONF_DOMAINS, CONF_TARGET, DOMAIN, TARGET_DEVICE
+from .const import CONF_DOMAINS, DOMAIN, TARGET_DEVICE, TARGET_ENTITY, get_targets
 
 
 @dataclass(frozen=True, slots=True)
@@ -20,6 +20,7 @@ class Target:
     device_id: str | None  # device the value entity is attached to
     entity_id: str | None  # source entity (entity mode only)
     entity_name: str | None  # name of the source entity (entity mode only)
+    suffix: str | None = None  # appended after the parameter name
 
 
 def _entity_display_name(hass: HomeAssistant, entry: er.RegistryEntry) -> str:
@@ -45,9 +46,10 @@ def compute_targets(hass: HomeAssistant, data: Mapping[str, Any]) -> list[Target
         and entry.disabled_by is None
     ]
 
+    kinds = get_targets(data)
     targets: list[Target] = []
 
-    if data.get(CONF_TARGET) == TARGET_DEVICE:
+    if TARGET_DEVICE in kinds:
         seen: set[str] = set()
         for entry in entries:
             if not entry.device_id or entry.device_id in seen:
@@ -64,24 +66,32 @@ def compute_targets(hass: HomeAssistant, data: Mapping[str, Any]) -> list[Target
                     entity_name=None,
                 )
             )
-        return sorted(targets, key=lambda t: t.key)
 
-    for entry in entries:
-        device_id = entry.device_id
-        if device_id and (device := dev_reg.async_get(device_id)) is not None:
-            if device.disabled:
-                continue
-            # Name relative to the device ("Ceiling" -> "<Device> Ceiling <param>")
-            entity_name = entry.name or entry.original_name
-        else:
-            device_id = None
-            entity_name = _entity_display_name(hass, entry)
-        targets.append(
-            Target(
-                key=f"entity_{entry.id}",
-                device_id=device_id,
-                entity_id=entry.entity_id,
-                entity_name=entity_name,
+    if TARGET_ENTITY in kinds:
+        both = TARGET_DEVICE in kinds
+        for entry in entries:
+            device_id = entry.device_id
+            if device_id and (device := dev_reg.async_get(device_id)) is not None:
+                if device.disabled:
+                    continue
+                # Name relative to the device ("Ceiling" -> "<Device> Ceiling <param>")
+                entity_name = entry.name or entry.original_name
+                suffix = None
+                if entity_name is None and both:
+                    # Main entity of the device: tell it apart from the device value
+                    suffix = f"({entry.entity_id})"
+            else:
+                device_id = None
+                entity_name = _entity_display_name(hass, entry)
+                suffix = None
+            targets.append(
+                Target(
+                    key=f"entity_{entry.id}",
+                    device_id=device_id,
+                    entity_id=entry.entity_id,
+                    entity_name=entity_name,
+                    suffix=suffix,
+                )
             )
-        )
+
     return sorted(targets, key=lambda t: t.key)
